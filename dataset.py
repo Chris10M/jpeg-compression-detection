@@ -53,7 +53,7 @@ class JPEGDatasetTrain(Dataset):
                 self.file_paths.extend([os.path.join(root, filename) for filename in filenames])
 
         self.len = len(self.file_paths)
-        self.random_crop = transforms.RandomCrop((8, 8))
+        self.random_crop = transforms.RandomCrop((224, 224))
 
     def __len__(self):
         return self.len
@@ -64,19 +64,15 @@ class JPEGDatasetTrain(Dataset):
         img = Image.open(image_path)
         img = self.random_crop(img)
 
-        rgb_image = np.array(img)
+        img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
 
         QF = np.random.randint(5, 95)
         encode_param = [cv2.IMWRITE_JPEG_QUALITY, QF]
-        result, encimg = cv2.imencode('.jpg', rgb_image, encode_param)
-        jpg_compressed_image = cv2.imdecode(encimg, 1)
+        result, encimg = cv2.imencode('.jpg', img, encode_param)
+        x = cv2.imdecode(encimg, 1)
 
-
-        ycrcb = cv2.cvtColor(jpg_compressed_image, cv2.COLOR_RGB2YCrCb)
-        y, cr, cb = cv2.split(ycrcb)
-        
-        x = np.concatenate([cv2.dct(y / 255), cv2.dct(cr / 255), cv2.dct(cb / 255)]).reshape(-1)
-        x = torch.tensor(x, dtype=torch.float32)
+        # img = torch.tensor(img, dtype=torch.float32)
+        # x = torch.tensor(x, dtype=torch.float32)
 
         return x, QF
 

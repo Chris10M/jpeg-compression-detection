@@ -4,7 +4,9 @@ import torch.nn as nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from dataset import JPEGDatasetTrain
+from torchvision import models
 
+from upsampler import Upsamper
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
 from pytorch_lightning import LightningModule, Trainer
 from torchmetrics import MeanAbsoluteError
@@ -17,21 +19,23 @@ class MNISTModel(LightningModule):
     def __init__(self):
         super().__init__()
 
-        self.net = nn.Sequential(
-            nn.Linear(192, 256),
-            nn.ReLU(True),
-            nn.Linear(256, 1),
-            nn.ReLU(True),
-        )
+        self.net = models.resnet18(num_classes=1)
 
+        self.upsampler = Upsamper()
         self.val_accuracy = MeanAbsoluteError()
 
     def forward(self, x):
-        return self.net(x).view(-1)
+        x = self.net(x)
+        x = F.relu(x)
+
+        return x.view(-1)
 
     def training_step(self, batch, batch_idx):
         x, y = batch
 
+        recon_x = self.upsampler(x)
+        print(x.shape, recon_x.shape)
+        
         outs = self(x)
         loss = F.l1_loss(outs, y)
 
@@ -39,6 +43,11 @@ class MNISTModel(LightningModule):
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
+
+        recon_x = self.upsampler(x)
+
+        print(x.shape, recon_x.shape)
+
 
         outs = self(x)
         loss = F.l1_loss(outs, y)

@@ -5,7 +5,8 @@ __pycache__/
 data/
 # C extensions
 *.so
-
+lightning_logs
+weights
 # Distribution / packaging
 .Python
 build/
