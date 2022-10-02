@@ -53,13 +53,13 @@ class MNISTModel(LightningModule):
         return torch.optim.Adam(self.parameters(), lr=0.02)
 
     def train_dataloader(self):
-        train_ds = JPEGDatasetTrain('../DIV2K_valid_HR')
-        train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, num_workers=os.cpu_count())
+        train_ds = JPEGDatasetTrain('data/DIV2K_valid_HR', mode='train')
+        train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, num_workers=os.cpu_count(), shuffle=True)
 
         return train_loader
 
     def val_dataloader(self):
-        val_ds = JPEGDatasetTrain('../DIV2K_valid_HR')
+        val_ds = JPEGDatasetTrain('data/DIV2K_valid_HR', mode='val')
         return DataLoader(val_ds, batch_size=BATCH_SIZE, num_workers=os.cpu_count())
 
 

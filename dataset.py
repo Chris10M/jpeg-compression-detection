@@ -38,13 +38,20 @@ def preprocess_image(bgr_image):
 
 
 class JPEGDatasetTrain(Dataset):
-    def __init__(self, root) -> None:
+    def __init__(self, root, mode) -> None:
         self.root = root
 
+        assert mode in ['train', 'val']
         self.file_paths = list()
-        for root, _, filenames in os.walk(self.root):
-            self.file_paths.extend([os.path.join(root, filename) for filename in filenames])
-            
+
+        rep_factor = 1
+        if 'train' in mode:
+            rep_factor = 100
+
+        for _ in range(rep_factor):
+            for root, _, filenames in os.walk(self.root):
+                self.file_paths.extend([os.path.join(root, filename) for filename in filenames])
+
         self.len = len(self.file_paths)
         self.random_crop = transforms.RandomCrop((8, 8))
 
