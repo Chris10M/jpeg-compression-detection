@@ -33,7 +33,7 @@ class Upsamper:
             tile=0,
             tile_pad=10,
             pre_pad=0,
-            half=False)
+            half=True)
 
     def __call__(self, img_tensor):
         outputs = list()
@@ -41,7 +41,7 @@ class Upsamper:
             output, _ = self.upsampler.enhance(img, outscale=1)
             outputs.append(output)
 
-        outputs = torch.tensor(outputs).to(img_tensor.device)
+        outputs = torch.from_numpy(np.array(outputs)).to(img_tensor.device)
 
         return outputs
 

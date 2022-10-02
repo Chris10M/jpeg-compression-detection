@@ -77,6 +77,46 @@ class JPEGDatasetTrain(Dataset):
         return x, QF
 
 
+class JPEGDatasetTest(Dataset):
+    def __init__(self, root, five_crop=False) -> None:
+        self.root = root
+        self.file_paths = list()
+
+        for root, _, filenames in os.walk(self.root):
+            self.file_paths.extend([os.path.join(root, filename) for filename in filenames])
+
+        self.len = len(self.file_paths)
+
+        self.five_crop = five_crop        
+        if five_crop:
+            self.random_crop = transforms.FiveCrop((224, 224))
+        else:
+            self.random_crop = transforms.RandomCrop((224, 224))
+
+    def __len__(self):
+        return self.len
+
+    def __getitem__(self, index):
+        image_path = self.file_paths[index]
+
+        img = Image.open(image_path)
+        img = self.random_crop(img)
+                
+        if not self.five_crop:
+            x = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+            x = torch.tensor(x)[None, ...]
+        else:
+            xs = list()
+            for im in img:
+                x = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+                x = torch.tensor(x)[None, ...]
+                xs.append(x)
+
+            x = torch.cat(xs)
+
+        return image_path, x
+
+
 def main():
     image = cv2.imread('test.png')
     x = preprocess_image(image)

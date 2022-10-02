@@ -7,6 +7,7 @@ from dataset import JPEGDatasetTrain
 from torchvision import models
 
 from upsampler import Upsamper
+from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
 from pytorch_lightning import LightningModule, Trainer
 from torchmetrics import MeanAbsoluteError
@@ -15,7 +16,7 @@ from torchmetrics import MeanAbsoluteError
 BATCH_SIZE = 32
 
 
-class MNISTModel(LightningModule):
+class JPEGCompressionModel(LightningModule):
     def __init__(self):
         super().__init__()
 
@@ -33,9 +34,11 @@ class MNISTModel(LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
 
-        recon_x = self.upsampler(x)
-        print(x.shape, recon_x.shape)
+        recon_x = self.upsampler(x).float()
+        x = (recon_x - x) / 255
         
+        x = x.permute(0, 3, 1, 2)
+
         outs = self(x)
         loss = F.l1_loss(outs, y)
 
@@ -44,14 +47,13 @@ class MNISTModel(LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
 
-        recon_x = self.upsampler(x)
-
-        print(x.shape, recon_x.shape)
-
+        recon_x = self.upsampler(x).float()
+        x = (recon_x - x) / 255
+        
+        x = x.permute(0, 3, 1, 2)
 
         outs = self(x)
         loss = F.l1_loss(outs, y)
-
         self.val_accuracy.update(outs, y)
 
         # Calling self.log will surface up scalars for you in TensorBoard
@@ -73,20 +75,24 @@ class MNISTModel(LightningModule):
 
 
 def main():
+    mnist_model = JPEGCompressionModel()
 
-    mnist_model = MNISTModel()
+    checkpoint_callback = ModelCheckpoint(save_top_k=3,
+                                            monitor="val_loss",
+                                            mode="min",
+                                            dirpath="saved_models",
+                                            filename="sample-mnist-{epoch:02d}-{val_loss:.2f}")
 
-        # Initialize a trainer
+    # Initialize a trainer
     trainer = Trainer(
         accelerator="auto",
         devices=1 if torch.cuda.is_available() else None,  # limiting got iPython runs
-        max_epochs=3,
-        callbacks=[TQDMProgressBar(refresh_rate=20)],
+        max_epochs=10,
+        callbacks=[TQDMProgressBar(refresh_rate=20), checkpoint_callback],
     )
 
     # Train the model ⚡
     trainer.fit(mnist_model)
-
 
 
 if __name__ == '__main__':
