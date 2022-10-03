@@ -101,6 +101,7 @@ def main():
 
     # Train the model ⚡
     trainer.fit(mnist_model)
+    trainer.save_checkpoint("saved_models/checkpoint.ckpt")
 
 
 if __name__ == '__main__':
