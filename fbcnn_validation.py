@@ -3,9 +3,14 @@ if not os.path.isdir('FBCNN'):
     os.system('git clone https://github.com/jiaxi-jiang/FBCNN.git')
 
 import cv2
+import csv
 import torch
 import requests
+import numpy as np
 import os.path
+import torchvision.transforms as transforms
+from PIL import Image
+
 from FBCNN.models.network_fbcnn import FBCNN as net
 from FBCNN.utils import utils_image as util
 from dataset import JPEGDatasetTest
@@ -44,9 +49,13 @@ class Model:
         self.model = model.to(device)
 
         self.n_channels = n_channels
+        self.random_crop = transforms.RandomCrop((256, 256))
 
-    def __call__(self, image_path):
-        img_L_np = util.imread_uint(image_path, n_channels=self.n_channels)       
+    def __call__(self, image_path):        
+        img = Image.open(image_path).convert('RGB')
+        img = self.random_crop(img)
+        img_L_np = np.array(img)
+        
         img_L = util.uint2tensor4(img_L_np)
         img_L = img_L.to(device)
 
@@ -62,13 +71,25 @@ def main():
     model = Model()
     val_ds = JPEGDatasetTest('data/val_dataset', five_crop=False)
     
+    rows = list()
     for image_path, x in val_ds:
-        y_hat = model(image_path)
+        QF = model(image_path)
         image = cv2.imread(image_path)
-        
-        print(f'QF: {min(int(round(y_hat, 2)), 100)}')
+
+        rows.append([image_path, '', QF])
+
+        print(f'image_path: {image_path} QF: {QF}')
         cv2.imshow('image', image)    
-        cv2.waitKey(0)
+        cv2.waitKey(20)
+
+
+    HEADERS = [['image_path', 'jpeg_compressed', 'QF']]
+    rows = HEADERS + rows
+
+    os.makedirs('outputs', exist_ok=True)
+    with open('outputs/fbcnn.csv', 'w') as csv_file:
+        csv.writer(csv_file).writerows(rows)
+
 
 
 if __name__ == '__main__':

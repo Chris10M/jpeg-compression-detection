@@ -43,7 +43,7 @@ Reconstructed Reference    |  Input       |  Residual
 ### Pre-Trained Regression Model
 
 * We compute the JPEG Quality Factor using a pretrained regressor, [Towards Flexible Blind JPEG Artifacts Removal (FBCNN, ICCV 2021)](https://arxiv.org/abs/2109.14573) which supports single, doube jpeg compressions with Non-alignment of the quantized matrices in double jpeg compression.
-* The [FBCNN](https://github.com/jiaxi-jiang/FBCNN) repository is here.
+* The [FBCNN](https://github.com/jiaxi-jiang/FBCNN) repository is used.
 
 
 ## Usage
@@ -64,10 +64,10 @@ python3 dct_validation.py
 
 ### Model Based Detection and Regression
 
-Execute validation.py to obtain the validation results stored as csv in outputs/dnn.csv
+Execute dnn_validation.py to obtain the validation results stored as csv in outputs/dnn.csv
  
 ```
-python3 validation.py
+python3 dnn_validation.py
 ``` 
 
 ### Pre-Trained Regression Model
@@ -80,7 +80,7 @@ python3 fbcnn_validation.py
 
 ### Train
 
-To train the model, we run train.py
+To train the DNN model, we run train.py
 
 ```
 python3 train.py

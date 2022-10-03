@@ -1,4 +1,6 @@
 import cv2
+import os
+import csv
 import numpy as np
 from dataset import JPEGDatasetTest
 from numpy.lib.stride_tricks import as_strided
@@ -54,16 +56,27 @@ def is_jpeg_compressed(bgr_image):
     return True
 
 
-def main():
+def main():    
     val_ds = JPEGDatasetTest('data/val_dataset', five_crop=False)
     
+    rows = list()
     for image_path, x in val_ds:
         image = cv2.imread(image_path)
         
         jpeg_compressed = is_jpeg_compressed(image)
         
+        rows.append([image_path, jpeg_compressed, ''])
+
+        print(f'image_path: {image_path} jpeg_compressed: {jpeg_compressed}')
         cv2.imshow('image', image)    
-        cv2.waitKey(0)
+        cv2.waitKey(20)
+
+    HEADERS = [['image_path', 'jpeg_compressed', 'QF']]
+    rows = HEADERS + rows
+
+    os.makedirs('outputs', exist_ok=True)
+    with open('outputs/dct.csv', 'w') as csv_file:
+        csv.writer(csv_file).writerows(rows)
 
 
 if __name__ == '__main__':

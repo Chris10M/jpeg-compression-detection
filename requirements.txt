@@ -14,3 +14,4 @@ torch_dct==0.1.5
 torchmetrics==0.9.3
 torchvision==0.13.1
 git+https://github.com/xinntao/Real-ESRGAN
+git+https://github.com/Juvenal-Yescas/mediafire-dl

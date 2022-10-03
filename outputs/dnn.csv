@@ -1,0 +1,35 @@
+image_path,jpeg_compressed,QF
+data/val_dataset/film-grain-overlay.jpg,False,90
+data/val_dataset/00001_20.jpg,True,13
+data/val_dataset/00001_45.png,True,28
+data/val_dataset/00001_50_70_90.jpg,True,64
+data/val_dataset/0002.png,False,96
+data/val_dataset/0810_20.jpg,True,23
+data/val_dataset/0810_80.jpg,True,74
+data/val_dataset/1.jpg,True,45
+data/val_dataset/1e8b970f4259424bcf6c79903bb46a41.jpg,False,78
+data/val_dataset/8725893_PhotoCollage_1585735486638.jpg,True,72
+data/val_dataset/8732539_lislleyavila_2020_04_01_05_58_22_CLIQUES.jpg,False,84
+data/val_dataset/8782597_1F9DC2C3-A67E-4379-A1A6-A0228F939355.jpeg,True,85
+data/val_dataset/8828824_BodyEditor_20200329_162131317.jpg,False,91
+data/val_dataset/8873192_199471515.jpg,True,68
+data/val_dataset/9014255_hoka-mach.png,False,90
+data/val_dataset/desantnica.png,True,60
+data/val_dataset/image (14).png,True,84
+data/val_dataset/img_20220107_145854.png,False,96
+data/val_dataset/IMG_20220110_133943.png,False,90
+data/val_dataset/img_20220110_134535.png,False,97
+data/val_dataset/indus.png,False,85
+data/val_dataset/look.com.ua-267301.jpg,True,89
+data/val_dataset/low_60.jpg,True,62
+data/val_dataset/low_60_90_killed.jpg,True,63
+data/val_dataset/low_80.jpg,True,59
+data/val_dataset/low_90_killed.jpg,True,51
+data/val_dataset/olga-boyko-a-warrior-devushka-krasotka-rytsar-mech-shlem-kol.jpg,True,85
+data/val_dataset/ppt3.png,False,87
+data/val_dataset/q52.png,True,74
+data/val_dataset/Ref_Image_low res.jpg,False,90
+data/val_dataset/region.png,False,97
+data/val_dataset/region2.png,False,96
+data/val_dataset/slonik.jpg,False,78
+data/val_dataset/web_low_90.jpg,True,37
