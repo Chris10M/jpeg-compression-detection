@@ -12,6 +12,7 @@ Low Compression            |  Medium Compression       |  High Compression
 
 ### DCT Based JPEG Compression Detection
 
+[Image taken from here](https://www.cs.auckland.ac.nz/compsci708s1c/lectures/jpeg_mpeg/jpeg.html)
 <p align="center">
 <img src="images/dct.gif" alt="method" width="600"/></br>
 </p>
