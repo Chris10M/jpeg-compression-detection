@@ -10,7 +10,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def main():
-    model = JPEGCompressionModel.load_from_checkpoint("saved_models/sample-mnist-epoch=05-val_loss=6.78.ckpt")
+    model = JPEGCompressionModel.load_from_checkpoint("saved_models/sample-mnist-epoch=00-val_loss=13.74.ckpt")
     model.eval()
     model = model.to(device)
 
@@ -26,9 +26,10 @@ def main():
         x = x.permute(0, 3, 1, 2)
 
         with torch.no_grad():
-            y_hats = model(x)
+            c, r = model(x)
 
-        y_hat = y_hats.max(-1).values.cpu().item()
+        print(c)
+        y_hat = r.max(-1).values.cpu().item()
 
         image = cv2.imread(image_path)
         

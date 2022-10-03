@@ -26,6 +26,11 @@ Low Compression            |  Medium Compression       |  High Compression
 
 ### Model Based Detection and Regression
 
+Reconstructed Reference    |  Input       |  Residual 
+:-------------------------:|:-------------------------:|:-------------------------:
+![](images/reference.png)       |  ![](images/input.png)      |  ![](images/residual.png)
+
+
 
 * Compute a reference denoised image using [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
 * Compute the residual image, i.e., difference between reference denoised image and input image.
@@ -35,73 +40,48 @@ Low Compression            |  Medium Compression       |  High Compression
 * Non-aligned double JPEG compression should be implicitly handled as the reference image should produce a constant noise pattern. 
 
 
-<p align="center">
-<img src="images/method_overview.png" alt="method" width="600"/></br>
-</p>
+### Pre-Trained Regression Model
 
-### LRW 
-Alignment Plot                      |  Melspectogram Output          
-:-------------------------:|:-------------------------:|
-![](images/attention.png)       |  ![](images/meloutput.png)  
+* We compute the JPEG Quality Factor using a pretrained regressor, [Towards Flexible Blind JPEG Artifacts Removal (FBCNN, ICCV 2021)](https://arxiv.org/abs/2109.14573) which supports single, doube jpeg compressions with Non-alignment of the quantized matrices in double jpeg compression.
+* The [FBCNN](https://github.com/jiaxi-jiang/FBCNN) repository is here.
 
 
 ## Usage
 
-### Demo
-
-The pretrained model is available [here](https://www.mediafire.com/file/evktjxytts2t72c/lip2speech_final.pth/file) [265.12 MB]
-
-Download the pretrained model and place it inside **savedmodels** directory. To visulaize the results,  we run demo.py.
+Run get_dataset.sh to download the datasets.
 
 ```
-python3 demo.py
+bash get_dataset.sh
 ``` 
 
-#### Default arguments
+### DCT Based JPEG Compression Detection
 
-* dataset: LRW (10 Samples)
-* root: Datasets/SAMPLE_LRW
-* model_path: savedmodels/lip2speech_final.pth
-* encoding: voice
-
-
-### Evaluate 
-
-Evaluates the ESTOI score for the given Lip2Speech model. (Higer is better)
+Execute dct_validation.py to obtain the validation results stored as csv in outputs/dct.csv
 
 ```
-python3 evaluate.py --dataset LRW --root Datasets/LRW --model_path savedmodels/lip2speech_final.pth
-```
+python3 dct_validation.py
+``` 
 
+### Model Based Detection and Regression
+
+Execute validation.py to obtain the validation results stored as csv in outputs/dnn.csv
+ 
+```
+python3 validation.py
+``` 
+
+### Pre-Trained Regression Model
+
+Execute fbcnn_validation.py to obtain the validation results stored as csv in outputs/fbcnn.csv
+ 
+```
+python3 fbcnn_validation.py
+``` 
 
 ### Train
 
 To train the model, we run train.py
 
 ```
-python3 train.py --dataset LRW --root Datasets/LRW --finetune_model_path savedmodels/lip2speech_final.pth
+python3 train.py
 ```
-
-* finetune_model_path - Use as base model to finetune to dataset. (optional)
-
-
-
-## Acknowledgement
-
-[tacotron2](https://github.com/NVIDIA/tacotron2)
-
-
-## Citation
-
-If you use this software in your work, please cite it using the following metadata.
-
-
-```
-@software{Millerdurai_Lip2Speech_2021,
-author = {Millerdurai, Christen and Abdel Khaliq, Lotfy and Ulrich, Timon},
-month = {8},
-title = {{Lip2Speech}},
-url = {https://github.com/Chris10M/Lip2Speech},
-version = {1.0.0},
-year = {2021}
-}

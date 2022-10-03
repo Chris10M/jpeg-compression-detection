@@ -34,7 +34,7 @@ def preprocess_image(image_path):
 
     x = (recon_x.float() - x) / 255
 
-    cv2.imshow('diff', x[0].cpu().numpy())
+    cv2.imshow('diff', x[0].cpu().numpy() * 2)
 
     x = x.permute(0, 3, 1, 2)
 
@@ -45,16 +45,20 @@ def preprocess_image(image_path):
 
 
 def main():
-    model = JPEGCompressionModel.load_from_checkpoint("lightning_logs/version_2/checkpoints/epoch=2-step=939.ckpt")
+    model = JPEGCompressionModel.load_from_checkpoint("saved_models/sample-mnist-epoch=05-val_loss=6.55.ckpt")
     model.eval()
     
-    x, qf = preprocess_image('/media/ssd/christen-rnd/Experiments/jpeg-compression-detection/data/DIV2K_valid_HR/0802.png')
-    
-    with torch.no_grad():
-        y_hat = model(x)
+    while True:
+        x, qf = preprocess_image('data/DIV2K_valid_HR/0802.png')
+        
+        with torch.no_grad():
+            c, r = model(x)
 
-    print(y_hat, qf)
-    cv2.waitKey(0)
+        print(c, r, qf)
+        c = cv2.waitKey(0)
+
+        if ord('q') == c:
+            break
 
 
 

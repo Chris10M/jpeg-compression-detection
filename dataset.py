@@ -82,7 +82,7 @@ class JPEGDatasetTrain(Dataset):
 
         QF = min(QF_1, QF_2)
         
-        y = 0 if QF == 100 else 1
+        y = torch.tensor(0 if QF == 100 else 1, dtype=torch.float32)
 
         return x, QF, y
 

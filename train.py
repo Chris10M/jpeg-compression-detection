@@ -59,9 +59,10 @@ class JPEGCompressionModel(LightningModule):
         
         x = x.permute(0, 3, 1, 2)
 
-        outs = self(x)
-        loss = F.l1_loss(outs, y)
-        self.val_accuracy.update(outs, y)
+        c, r = self(x)
+        loss = F.l1_loss(r, y) + F.binary_cross_entropy(c, z)
+
+        self.val_accuracy.update(r, y)
 
         # Calling self.log will surface up scalars for you in TensorBoard
         self.log("val_loss", loss, prog_bar=True)

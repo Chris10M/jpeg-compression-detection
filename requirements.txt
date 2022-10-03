@@ -1,1 +1,16 @@
+basicsr==1.4.2
+ipython==8.5.0
+matplotlib==3.6.0
+numpy==1.23.1
+opencv_python==4.6.0.66
+Pillow==9.2.0
+pytorch_lightning==1.7.7
+requests==2.28.1
+scikit_image==0.19.3
+scipy==1.9.1
+skimage==0.0
+torch==1.12.1
+torch_dct==0.1.5
+torchmetrics==0.9.3
+torchvision==0.13.1
 git+https://github.com/xinntao/Real-ESRGAN
