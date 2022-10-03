@@ -20,7 +20,11 @@ class JPEGCompressionModel(LightningModule):
     def __init__(self):
         super().__init__()
 
-        self.net = models.resnet18(num_classes=1)
+        embedding_dim = 128
+        self.net = models.resnet18(num_classes=embedding_dim)
+        
+        self.classifier = nn.Linear(embedding_dim, 1)
+        self.regressor = nn.Linear(embedding_dim, 1)
 
         self.upsampler = Upsamper()
         self.val_accuracy = MeanAbsoluteError()
@@ -29,23 +33,26 @@ class JPEGCompressionModel(LightningModule):
         x = self.net(x)
         x = F.relu(x)
 
-        return x.view(-1)
+        c = self.classifier(x).view(-1).sigmoid()
+        r = F.relu(self.regressor(x)).view(-1)
+        
+        return c, r
 
     def training_step(self, batch, batch_idx):
-        x, y = batch
+        x, y, z = batch
 
         recon_x = self.upsampler(x).float()
         x = (recon_x - x) / 255
         
         x = x.permute(0, 3, 1, 2)
 
-        outs = self(x)
-        loss = F.l1_loss(outs, y)
+        c, r = self(x)
+        loss = F.l1_loss(r, y) + F.binary_cross_entropy(c, z)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
-        x, y = batch
+        x, y, z = batch
 
         recon_x = self.upsampler(x).float()
         x = (recon_x - x) / 255

@@ -64,17 +64,27 @@ class JPEGDatasetTrain(Dataset):
         img = Image.open(image_path)
         img = self.random_crop(img)
 
-        img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+        x = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
 
-        QF = np.random.randint(5, 95)
-        encode_param = [cv2.IMWRITE_JPEG_QUALITY, QF]
-        result, encimg = cv2.imencode('.jpg', img, encode_param)
-        x = cv2.imdecode(encimg, 1)
+        QF_1 = QF_2 = 100
+        
+        if np.random.rand() > 0.5:
+            QF_1 = np.random.randint(5, 95)
+            encode_param = [cv2.IMWRITE_JPEG_QUALITY, QF_1]
+            result, encimg = cv2.imencode('.jpg', x, encode_param)
+            x = cv2.imdecode(encimg, 1)
 
-        # img = torch.tensor(img, dtype=torch.float32)
-        # x = torch.tensor(x, dtype=torch.float32)
+        if np.random.rand() > 0.5:
+            QF_2 = np.random.randint(5, 95)
+            encode_param = [cv2.IMWRITE_JPEG_QUALITY, QF_2]
+            result, encimg = cv2.imencode('.jpg', x, encode_param)
+            x = cv2.imdecode(encimg, 1)
 
-        return x, QF
+        QF = min(QF_1, QF_2)
+        
+        y = 0 if QF == 100 else 1
+
+        return x, QF, y
 
 
 class JPEGDatasetTest(Dataset):
