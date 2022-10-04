@@ -1,6 +1,6 @@
-# JPEG Image Compression And Quality Factor Detection
+# JPEG Image Compression Detection And Quality Factor Detection
 
-Few methods for JPEG Image Compression And Quality Factor Detection
+Few methods for JPEG Image Compression Detection And Quality Factor Detection
 
 
 Low Compression            |  Medium Compression       |  High Compression 
